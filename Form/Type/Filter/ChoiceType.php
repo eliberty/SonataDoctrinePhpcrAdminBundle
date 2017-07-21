@@ -48,6 +48,11 @@ class ChoiceType extends BaseChoiceType
             self::TYPE_CONTAINS_WORDS => $this->translator->trans('label_type_contains_words', array(), 'SonataDoctrinePHPCRAdmin'),
         );
 
+        if (method_exists('Symfony\Component\Form\FormTypeInterface', 'setDefaultOptions')) {
+            $choices = array_flip($choices);
+        }
+        
+        
         $builder
             ->add('type', 'choice', array('choices' => $choices, 'required' => false))
             ->add('value', $options['field_type'], array_merge(array('required' => false), $options['field_options']))
