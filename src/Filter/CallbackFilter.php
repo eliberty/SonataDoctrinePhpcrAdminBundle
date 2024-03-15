@@ -16,6 +16,8 @@ namespace Sonata\DoctrinePHPCRAdminBundle\Filter;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Form\Type\Filter\DefaultType;
 use Sonata\DoctrinePHPCRAdminBundle\Filter\Filter as BaseFilter;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class CallbackFilter extends BaseFilter
 {
@@ -41,8 +43,8 @@ class CallbackFilter extends BaseFilter
     {
         return [
             'callback' => null,
-            'field_type' => 'Symfony\Component\Form\Extension\Core\Type\TextType',
-            'operator_type' => 'hidden',
+            'field_type' => TextType::class,
+            'operator_type' => HiddenType::class,
             'operator_options' => [],
         ];
     }
