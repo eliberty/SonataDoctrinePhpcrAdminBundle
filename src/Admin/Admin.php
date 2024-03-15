@@ -42,7 +42,7 @@ class Admin extends AbstractAdmin
      *
      * @param string $rootPath
      */
-    public function setRootPath($rootPath)
+    public function setRootPath($rootPath): void
     {
         $this->rootPath = $rootPath;
     }
@@ -130,7 +130,7 @@ class Admin extends AbstractAdmin
         return parent::toString($object);
     }
 
-    protected function configureRoutes(RouteCollection $collection)
+    protected function configureRoutes(RouteCollection $collection): void
     {
         foreach (['edit', 'create', 'delete'] as $name) {
             if ($collection->has($name)) {

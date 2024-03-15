@@ -21,7 +21,7 @@ class NumberFilter extends Filter
     /**
      * {@inheritdoc}
      */
-    public function filter(ProxyQueryInterface $proxyQuery, $alias, $field, $data)
+    public function filter(ProxyQueryInterface $proxyQuery, $alias, $field, $data): void
     {
         if (!$data || !\is_array($data) || !\array_key_exists('value', $data) || !is_numeric($data['value'])) {
             return;
@@ -71,7 +71,7 @@ class NumberFilter extends Filter
      */
     public function getRenderSettings()
     {
-        return ['sonata_type_filter_number', [
+        return [NumberType::class, [
             'field_type' => $this->getFieldType(),
             'field_options' => $this->getFieldOptions(),
             'label' => $this->getLabel(),

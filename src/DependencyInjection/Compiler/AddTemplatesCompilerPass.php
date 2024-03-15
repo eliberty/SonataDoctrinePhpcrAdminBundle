@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class AddTemplatesCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $settings = $this->fixSettings($container);
         foreach ($container->findTaggedServiceIds('sonata.admin') as $id => $attributes) {

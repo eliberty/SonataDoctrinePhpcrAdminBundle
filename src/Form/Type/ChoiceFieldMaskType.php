@@ -25,7 +25,7 @@ class ChoiceFieldMaskType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $allFieldNames = [];
         foreach ($options['map'] as $value => $fieldNames) {
@@ -43,7 +43,7 @@ class ChoiceFieldMaskType extends AbstractType
     /**
      * NEXT_MAJOR: remove this method.
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setDefaultOptions(OptionsResolverInterface $resolver): void
     {
         $this->configureOptions($resolver);
     }
@@ -51,7 +51,7 @@ class ChoiceFieldMaskType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'map' => [],

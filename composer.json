@@ -22,11 +22,11 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.4",
         "doctrine/phpcr-bundle": "^1.3 || ^2.0",
         "doctrine/phpcr-odm": "^1.5.2 || ^2.0",
-        "sonata-project/admin-bundle": "^3.61",
-        "sonata-project/block-bundle": "^3.18.3",
+        "sonata-project/admin-bundle": "^3",
+        "sonata-project/block-bundle": "^3",
         "symfony-cmf/resource-rest-bundle": "^1.0.1",
         "symfony-cmf/tree-browser-bundle": "^2.0",
         "symfony/config": "^3.4.36 || ^4.4",
@@ -71,11 +71,6 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.x-dev"
-        }
     },
     "autoload": {
         "psr-4": {

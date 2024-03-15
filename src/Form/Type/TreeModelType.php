@@ -30,7 +30,7 @@ class TreeModelType extends AbstractType
      */
     protected $defaults = [];
 
-    public function setDefaults(array $defaults)
+    public function setDefaults(array $defaults): void
     {
         $this->defaults = $defaults;
     }
@@ -38,7 +38,7 @@ class TreeModelType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addViewTransformer(new ModelToIdTransformer($options['model_manager'], $options['class']), true);
         $builder->setAttribute('root_node', $options['root_node']);
@@ -49,7 +49,7 @@ class TreeModelType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['root_node'] = $form->getConfig()->getAttribute('root_node');
         $view->vars['select_root_node'] = $form->getConfig()->getAttribute('select_root_node');
@@ -60,7 +60,7 @@ class TreeModelType extends AbstractType
     /**
      * NEXT_MAJOR: remove this method.
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setDefaultOptions(OptionsResolverInterface $resolver): void
     {
         $this->configureOptions($resolver);
     }
@@ -68,7 +68,7 @@ class TreeModelType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'template' => 'doctrine_phpcr_odm_tree',

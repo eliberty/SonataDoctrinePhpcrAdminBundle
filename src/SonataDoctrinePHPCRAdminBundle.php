@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SonataDoctrinePHPCRAdminBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $this->registerFormMapping();
 
@@ -38,12 +38,12 @@ class SonataDoctrinePHPCRAdminBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerFormMapping();
     }
 
-    private function registerFormMapping()
+    private function registerFormMapping(): void
     {
         FormHelper::registerFormTypeMapping([
             'doctrine_phpcr_type_filter_choice' => ChoiceType::class,

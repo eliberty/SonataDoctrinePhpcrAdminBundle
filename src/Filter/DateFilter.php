@@ -21,7 +21,7 @@ class DateFilter extends Filter
     /**
      * {@inheritdoc}
      */
-    public function filter(ProxyQueryInterface $proxyQuery, $alias, $field, $data)
+    public function filter(ProxyQueryInterface $proxyQuery, $alias, $field, $data): void
     {
         if (!$data || !\is_array($data) || !isset($data['value'])) {
             return;
@@ -85,7 +85,7 @@ class DateFilter extends Filter
      */
     public function getRenderSettings()
     {
-        return ['sonata_type_filter_date', [
+        return [DateType::class, [
             'field_type' => $this->getFieldType(),
             'field_options' => $this->getFieldOptions(),
             'label' => $this->getLabel(),

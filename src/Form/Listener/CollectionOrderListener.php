@@ -47,7 +47,7 @@ class CollectionOrderListener
      * getting the collection from the form event and reordering it does
      * not update the stored order.
      */
-    public function onSubmit(FormEvent $event)
+    public function onSubmit(FormEvent $event): void
     {
         $form = $event->getForm()->getParent();
         $data = $form->getData();
