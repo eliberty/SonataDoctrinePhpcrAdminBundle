@@ -85,7 +85,7 @@ class DateFilter extends Filter
      */
     public function getRenderSettings()
     {
-        return ['sonata_type_filter_date', [
+        return [DateType::class, [
             'field_type' => $this->getFieldType(),
             'field_options' => $this->getFieldOptions(),
             'label' => $this->getLabel(),
