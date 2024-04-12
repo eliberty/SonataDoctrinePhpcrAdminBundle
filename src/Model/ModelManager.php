@@ -406,14 +406,33 @@ class ModelManager implements ModelManagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a list of default sort values.
+     *
+     * @phpstan-return array{
+     *     _page?: int,
+     *     _per_page?: int,
+     *     _sort_by?: string,
+     *     _sort_order?: string
+     * }
      */
-    public function getDefaultSortValues($class)
+    public function getDefaultSortValues($class): array
     {
-        return [
-            '_page' => 1,
-            '_per_page' => 25,
-        ];
+        $defaultSortValues = [];
+
+        return $this->configureDefaultSortValues($defaultSortValues);
+    }
+
+    public function getPerPageOptions(): array
+    {
+        return [10, 25, 50, 100, 250];
+    }
+
+    protected function configureDefaultSortValues(array &$sortValues): void
+    {
+        $sortValues[DatagridInterface::PAGE]       = 1;
+        $sortValues[DatagridInterface::PER_PAGE]   = 25;
+        $sortValues[DatagridInterface::SORT_BY]    = 'id';
+        $sortValues[DatagridInterface::SORT_ORDER] = 'ASC';
     }
 
     /**

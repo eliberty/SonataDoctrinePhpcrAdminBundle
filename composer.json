@@ -1,5 +1,5 @@
 {
-    "name": "sonata-project/doctrine-phpcr-admin-bundle",
+    "name": "eliberty/sonata-doctrine-phpcr-admin-bundle",
     "type": "symfony-bundle",
     "description": "Symfony Sonata / Integrate Doctrine PHPCR into the SonataAdminBundle",
     "keywords": [
