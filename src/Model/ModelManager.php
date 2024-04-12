@@ -419,7 +419,9 @@ class ModelManager implements ModelManagerInterface
     {
         $defaultSortValues = [];
 
-        return $this->configureDefaultSortValues($defaultSortValues);
+        $this->configureDefaultSortValues($defaultSortValues);
+
+        return $defaultSortValues;
     }
 
     public function getPerPageOptions(): array
