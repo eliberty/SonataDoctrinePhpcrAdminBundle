@@ -95,7 +95,7 @@ class Admin extends AbstractAdmin
         if (null === $this->subject && $this->request) {
             $id = $this->request->get($this->getIdParameter());
             if (null === $id || !preg_match('#^[0-9A-Za-z/\-_]+$#', $id)) {
-                $this->subject = false;
+                $this->subject = null;
             } else {
                 if (!UUIDHelper::isUUID($id)) {
                     $id = PathHelper::absolutizePath($id, '/');
