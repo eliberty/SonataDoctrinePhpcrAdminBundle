@@ -15,6 +15,7 @@ namespace Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
@@ -32,16 +33,45 @@ class AddTemplatesCompilerPass implements CompilerPassInterface
 
             $definition = $container->getDefinition($id);
 
-            if (!$definition->hasMethodCall('setFormTheme')) {
-                $definition->addMethodCall('setFormTheme', [$settings['templates']['form']]);
-            }
-
-            if (!$definition->hasMethodCall('setFilterTheme')) {
-                $definition->addMethodCall('setFilterTheme', [$settings['templates']['filter']]);
-            }
+            // Like DoctrineORMAdminBundle same file improvement
+            $this->mergeMethodCall($definition, 'setFormTheme', $settings['templates']['form']);
+            $this->mergeMethodCall($definition, 'setFilterTheme', $settings['templates']['filter']);
 
             $definition->addMethodCall('setTemplate', ['pager_results', $settings['templates']['pager_results']]);
         }
+    }
+
+    /**
+     * @param string       $name
+     * @param array<mixed> $value
+     *
+     * @return void
+     */
+    public function mergeMethodCall(Definition $definition, $name, $value)
+    {
+        if (!$definition->hasMethodCall($name)) {
+            $definition->addMethodCall($name, [$value]);
+
+            return;
+        }
+
+        $methodCalls = $definition->getMethodCalls();
+
+        foreach ($methodCalls as &$calls) {
+            foreach ($calls as &$call) {
+                if (\is_string($call)) {
+                    if ($call !== $name) {
+                        continue 2;
+                    }
+
+                    continue;
+                }
+
+                $call = [array_merge($call[0], $value)];
+            }
+        }
+
+        $definition->setMethodCalls($methodCalls);
     }
 
     /**

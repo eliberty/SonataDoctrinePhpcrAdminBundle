@@ -21,6 +21,7 @@ use Sonata\DoctrinePHPCRAdminBundle\Form\Type\ChoiceFieldMaskType;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\Filter\ChoiceType;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\TreeManagerType;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\TreeModelType;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -31,7 +32,7 @@ class SonataDoctrinePHPCRAdminBundle extends Bundle
         $this->registerFormMapping();
 
         $container->addCompilerPass(new AddGuesserCompilerPass());
-        $container->addCompilerPass(new AddTemplatesCompilerPass());
+        $container->addCompilerPass(new AddTemplatesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -1);
         $container->addCompilerPass(new AddTreeBrowserAssetsPass());
     }
 
