@@ -80,5 +80,5 @@
             "Sonata\\DoctrinePHPCRAdminBundle\\Tests\\": "tests/"
         }
     },
-    "abandoned": true
+    "abandoned": false
 }
