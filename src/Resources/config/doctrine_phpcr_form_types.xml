@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="sonata.admin.doctrine_phpcr.form.type.phpcr_odm_tree" class="Sonata\DoctrinePHPCRAdminBundle\Form\Type\TreeModelType">
-            <tag name="form.type" alias="doctrine_phpcr_odm_tree"/>
-            <call method="setDefaults">
-                <argument>%sonata_admin_doctrine_phpcr.tree_block.routing_defaults%</argument>
-            </call>
-        </service>
-        <service id="sonata.admin.doctrine_phpcr.form.type.phpcr_odm_tree_manager" class="Sonata\DoctrinePHPCRAdminBundle\Form\Type\TreeManagerType">
-            <tag name="form.type" alias="doctrine_phpcr_odm_tree_manager"/>
-        </service>
         <service id="sonata.admin.doctrine_phpcr.form.collection_type_extension_legacy" class="Sonata\DoctrinePHPCRAdminBundle\Form\Extension\LegacyCollectionTypeExtension" public="true">
             <tag name="form.type_extension" extended-type="Sonata\CoreBundle\Form\Type\CollectionType" alias="sonata_type_collection"/>
             <deprecated>The "%service_id%" service is deprecated since sonata-project/doctrine-phpcr-admin-bundle 2.x</deprecated>

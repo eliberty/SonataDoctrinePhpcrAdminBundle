@@ -59,8 +59,6 @@ class SonataDoctrinePHPCRAdminExtension extends AbstractSonataAdminExtension
         $loader->load('form.xml');
         $loader->load('route.xml');
         $loader->load('twig.xml');
-        $loader->load('block.xml');
-        $loader->load('tree.xml');
         $loader->load('autocomplete.xml');
 
         $configuration = new Configuration();
@@ -76,35 +74,10 @@ class SonataDoctrinePHPCRAdminExtension extends AbstractSonataAdminExtension
         $container->getDefinition('sonata.admin.builder.doctrine_phpcr_show')
             ->replaceArgument(1, $config['templates']['types']['show']);
 
-        if ($this->isConfigEnabled($container, $config['document_tree'])) {
-            $this->loadDocumentTree($config['document_tree'], $container);
-        }
     }
 
     public function getNamespace()
     {
         return 'http://sonata-project.org/schema/dic/doctrine_phpcr_admin';
-    }
-
-    /**
-     * Set the document tree parameters and configuration.
-     *
-     * @param array $config
-     */
-    private function loadDocumentTree($config, ContainerBuilder $container): void
-    {
-        $configuration = [
-            'routing_defaults' => $config['routing_defaults'],
-            'repository_name' => $config['repository_name'],
-            'sortable_by' => $config['sortable_by'],
-            'move' => true,
-            'reorder' => true,
-        ];
-
-        $container->setParameter('sonata_admin_doctrine_phpcr.tree_block.configuration', $configuration);
-
-        foreach ($configuration as $key => $value) {
-            $container->setParameter('sonata_admin_doctrine_phpcr.tree_block.'.$key, $value);
-        }
     }
 }

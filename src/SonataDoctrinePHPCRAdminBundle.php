@@ -16,11 +16,8 @@ namespace Sonata\DoctrinePHPCRAdminBundle;
 use Sonata\CoreBundle\Form\FormHelper;
 use Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler\AddGuesserCompilerPass;
 use Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler\AddTemplatesCompilerPass;
-use Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler\AddTreeBrowserAssetsPass;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\ChoiceFieldMaskType;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\Filter\ChoiceType;
-use Sonata\DoctrinePHPCRAdminBundle\Form\Type\TreeManagerType;
-use Sonata\DoctrinePHPCRAdminBundle\Form\Type\TreeModelType;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -33,7 +30,6 @@ class SonataDoctrinePHPCRAdminBundle extends Bundle
 
         $container->addCompilerPass(new AddGuesserCompilerPass());
         $container->addCompilerPass(new AddTemplatesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -1);
-        $container->addCompilerPass(new AddTreeBrowserAssetsPass());
     }
 
     /**
@@ -49,8 +45,6 @@ class SonataDoctrinePHPCRAdminBundle extends Bundle
         FormHelper::registerFormTypeMapping([
             'doctrine_phpcr_type_filter_choice' => ChoiceType::class,
             'choice_field_mask' => ChoiceFieldMaskType::class,
-            'doctrine_phpcr_odm_tree_manager' => TreeManagerType::class,
-            'doctrine_phpcr_odm_tree' => TreeModelType::class,
         ]);
     }
 }
