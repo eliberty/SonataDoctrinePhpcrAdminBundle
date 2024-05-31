@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrinePHPCRAdminBundle;
 
-use Sonata\CoreBundle\Form\FormHelper;
 use Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler\AddGuesserCompilerPass;
 use Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler\AddTemplatesCompilerPass;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\ChoiceFieldMaskType;
@@ -26,25 +25,7 @@ class SonataDoctrinePHPCRAdminBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {
-        $this->registerFormMapping();
-
         $container->addCompilerPass(new AddGuesserCompilerPass());
         $container->addCompilerPass(new AddTemplatesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -1);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot(): void
-    {
-        $this->registerFormMapping();
-    }
-
-    private function registerFormMapping(): void
-    {
-        FormHelper::registerFormTypeMapping([
-            'doctrine_phpcr_type_filter_choice' => ChoiceType::class,
-            'choice_field_mask' => ChoiceFieldMaskType::class,
-        ]);
     }
 }

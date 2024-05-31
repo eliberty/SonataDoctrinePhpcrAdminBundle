@@ -20,7 +20,6 @@ use Sonata\AdminBundle\Builder\FormContractorInterface;
 use Sonata\AdminBundle\Form\Type\AdminType;
 use Sonata\AdminBundle\Form\Type\ModelType;
 use Sonata\AdminBundle\Form\Type\ModelTypeList;
-use Sonata\CoreBundle\Form\Type\CollectionType as DeprecatedCollectionType;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\TreeModelType;
 use Sonata\Form\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -153,12 +152,6 @@ class FormContractor implements FormContractorInterface
                 $fieldDescription->setOption('edit', $fieldDescription->getOption('edit', 'admin'));
 
                 break;
-            case DeprecatedCollectionType::class:
-            case 'sonata_type_collection_legacy':
-            /*
-             * NEXT_MAJOR: Remove 'Sonata\CoreBundle\Form\Type\CollectionType' and 'sonata_type_collection_legacy'
-             * cases when replace SonataCoreBundle by SonataFormExtension
-             */
             case CollectionType::class:
             case 'sonata_type_collection':
                 if (!$fieldDescription->getAssociationAdmin()) {
