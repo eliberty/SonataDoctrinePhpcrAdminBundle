@@ -18,6 +18,7 @@ use PHPCR\Util\UUIDHelper;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\DoctrinePHPCRAdminBundle\Datagrid\ProxyQuery;
 
 /**
  * Extend the Admin class to incorporate phpcr changes.
@@ -55,19 +56,14 @@ class Admin extends AbstractAdmin
         return $this->rootPath;
     }
 
-    /**
-     * @param string $context
+   /**
+     * @param ProxyQuery $query
      *
-     * @return ProxyQueryInterface
+     * @return ProxyQuery
      */
-    public function createQuery($context = 'list')
+    protected function configureQuery(ProxyQueryInterface $query): ProxyQueryInterface
     {
-        $query = $this->getModelManager()->createQuery($this->getClass());
         $query->setRootPath($this->getRootPath());
-
-        foreach ($this->extensions as $extension) {
-            $extension->configureQuery($this, $query, $context);
-        }
 
         return $query;
     }
@@ -82,30 +78,33 @@ class Admin extends AbstractAdmin
         return $this->getUrlsafeIdentifier($object);
     }
 
-    /**
-     * Get subject.
-     *
-     * Overridden to allow a broader set of valid characters in the ID, and
-     * if the ID is not a UUID, to call absolutizePath on the ID.
-     *
-     * @return mixed
-     */
-    public function getSubject()
-    {
-        if (null === $this->subject && $this->request) {
-            $id = $this->request->get($this->getIdParameter());
-            if (null === $id || !preg_match('#^[0-9A-Za-z/\-_]+$#', $id)) {
-                $this->subject = null;
-            } else {
-                if (!UUIDHelper::isUUID($id)) {
-                    $id = PathHelper::absolutizePath($id, '/');
-                }
-                $this->subject = $this->getObject($id);
-            }
-        }
+    // /**
+    //  * Get subject.
+    //  *
+    //  * Overridden to allow a broader set of valid characters in the ID, and
+    //  * if the ID is not a UUID, to call absolutizePath on the ID.
+    //  * 
+    //  * It will be a final method in sonata-admin 4 but seems to be useless
+    //  * if not, maybe we can move the logic into Sonata\DoctrinePHPCRAdminBundle\Model\ModelManager::find()
+    //  * 
+    //  * @return mixed
+    //  */
+    // public function getSubject()
+    // {
+    //     if (null === $this->subject && $this->request) {
+    //         $id = $this->request->get($this->getIdParameter());
+    //         if (null === $id || !preg_match('#^[0-9A-Za-z/\-_]+$#', $id)) {
+    //             $this->subject = null;
+    //         } else {
+    //             if (!UUIDHelper::isUUID($id)) {
+    //                 $id = PathHelper::absolutizePath($id, '/');
+    //             }
+    //             $this->subject = $this->getObject($id);
+    //         }
+    //     }
 
-        return $this->subject;
-    }
+    //     return $this->subject;
+    // }
 
     /**
      * {@inheritdoc}
