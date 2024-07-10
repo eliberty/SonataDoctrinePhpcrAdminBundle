@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -15,9 +15,8 @@ namespace Sonata\DoctrinePHPCRAdminBundle\Guesser;
 
 use Doctrine\Bundle\PHPCRBundle\ManagerRegistry;
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadata;
-use Doctrine\ODM\PHPCR\Mapping\MappingException;
-use Sonata\AdminBundle\Guesser\TypeGuesserInterface;
-use Sonata\AdminBundle\Model\ModelManagerInterface;
+use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
+use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
 use Sonata\Form\Type\BooleanType;
 use Sonata\Form\Type\DatePickerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -32,53 +31,19 @@ use Symfony\Component\Form\Guess\TypeGuess;
  */
 class TypeGuesser implements TypeGuesserInterface
 {
-    /**
-     * @var ManagerRegistry
-     */
-    protected $registry;
-
-    /**
-     * @var array
-     */
-    private $cache;
+    protected ManagerRegistry $registry;
 
     public function __construct(ManagerRegistry $registry)
     {
         $this->registry = $registry;
-        $this->cache = [];
     }
 
     /**
-     * {@inheritdoc}
+     * TODO: test new implementation.
      */
-    public function guessType($class, $property, ModelManagerInterface $modelManager)
+    public function guess(FieldDescriptionInterface $fieldDescription): TypeGuess
     {
-        if (!$metadata = $this->getMetadata($class)) {
-            return new TypeGuess(TextType::class, [], Guess::LOW_CONFIDENCE);
-        }
-
-        if ($metadata->hasAssociation($property)) {
-            $mapping = $metadata->mappings[$property];
-
-            switch ($mapping['type']) {
-                case ClassMetadata::MANY_TO_MANY:
-                case 'referrers':
-                    return new TypeGuess('doctrine_phpcr_many_to_many', [], Guess::HIGH_CONFIDENCE);
-
-                case ClassMetadata::MANY_TO_ONE:
-                case 'parent':
-                    return new TypeGuess('doctrine_phpcr_many_to_one', [], Guess::HIGH_CONFIDENCE);
-
-                case 'children':
-                    return new TypeGuess('doctrine_phpcr_one_to_many', [], Guess::HIGH_CONFIDENCE);
-
-                case 'child':
-                    return new TypeGuess('doctrine_phpcr_one_to_one', [], Guess::HIGH_CONFIDENCE);
-            }
-        }
-
-        // TODO: missing multivalue support
-        switch ($metadata->getTypeOfField($property)) {
+        switch ($fieldDescription->getMappingType()) {
             case 'boolean':
                 return new TypeGuess(BooleanType::class, [], Guess::HIGH_CONFIDENCE);
             case 'date':
@@ -95,29 +60,21 @@ class TypeGuesser implements TypeGuesserInterface
             case 'binary':
             case 'uri':
                 return new TypeGuess(TextType::class, [], Guess::MEDIUM_CONFIDENCE);
+            case ClassMetadata::MANY_TO_MANY:
+            case 'referrers':
+                return new TypeGuess('doctrine_phpcr_many_to_many', [], Guess::HIGH_CONFIDENCE);
+
+            case ClassMetadata::MANY_TO_ONE:
+            case 'parent':
+                return new TypeGuess('doctrine_phpcr_many_to_one', [], Guess::HIGH_CONFIDENCE);
+
+            case 'children':
+                return new TypeGuess('doctrine_phpcr_one_to_many', [], Guess::HIGH_CONFIDENCE);
+
+            case 'child':
+                return new TypeGuess('doctrine_phpcr_one_to_one', [], Guess::HIGH_CONFIDENCE);
         }
 
         return new TypeGuess(TextType::class, [], Guess::LOW_CONFIDENCE);
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return mixed
-     */
-    protected function getMetadata($class)
-    {
-        if (\array_key_exists($class, $this->cache)) {
-            return $this->cache[$class];
-        }
-
-        $this->cache[$class] = null;
-        foreach ($this->registry->getManagers() as $dm) {
-            try {
-                return $this->cache[$class] = $dm->getClassMetadata($class);
-            } catch (MappingException $e) {
-                // not an entity or mapped super class
-            }
-        }
     }
 }

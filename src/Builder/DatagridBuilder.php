@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -14,54 +14,36 @@ declare(strict_types=1);
 namespace Sonata\DoctrinePHPCRAdminBundle\Builder;
 
 use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
 use Sonata\AdminBundle\Builder\DatagridBuilderInterface;
 use Sonata\AdminBundle\Datagrid\Datagrid;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\PagerInterface;
 use Sonata\AdminBundle\Datagrid\SimplePager;
+use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
+use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
 use Sonata\AdminBundle\Filter\FilterFactoryInterface;
-use Sonata\AdminBundle\Filter\FilterInterface;
-use Sonata\AdminBundle\Guesser\TypeGuesserInterface;
 use Symfony\Component\Form\FormFactory;
 
 class DatagridBuilder implements DatagridBuilderInterface
 {
-    /**
-     * @var FilterFactoryInterface
-     */
-    protected $filterFactory;
+    private FilterFactoryInterface $filterFactory;
 
-    /**
-     * @var FormFactory
-     */
-    protected $formFactory;
+    private FormFactory $formFactory;
 
-    /**
-     * @var TypeGuesserInterface
-     */
-    protected $guesser;
+    private TypeGuesserInterface $guesser;
 
     /**
      * Indicates that csrf protection enabled.
-     *
-     * @var bool
      */
-    protected $csrfTokenEnabled;
+    private bool $csrfTokenEnabled;
 
-    /**
-     * @var PagerInterface
-     */
-    protected $pager;
+    private ?PagerInterface $pager = null;
 
-    /**
-     * @param bool $csrfTokenEnabled
-     */
-    public function __construct(FormFactory $formFactory, FilterFactoryInterface $filterFactory, TypeGuesserInterface $guesser, $csrfTokenEnabled = true)
+    public function __construct(FormFactory $formFactory, FilterFactoryInterface $filterFactory, TypeGuesserInterface $guesser, bool $csrfTokenEnabled = true)
     {
-        $this->formFactory = $formFactory;
-        $this->filterFactory = $filterFactory;
-        $this->guesser = $guesser;
+        $this->formFactory      = $formFactory;
+        $this->filterFactory    = $filterFactory;
+        $this->guesser          = $guesser;
         $this->csrfTokenEnabled = $csrfTokenEnabled;
     }
 
@@ -70,10 +52,7 @@ class DatagridBuilder implements DatagridBuilderInterface
         $this->pager = $pager;
     }
 
-    /**
-     * @return PagerInterface
-     */
-    public function getPager()
+    public function getPager(): PagerInterface
     {
         if (null === $this->pager) {
             $this->pager = new SimplePager();
@@ -85,10 +64,9 @@ class DatagridBuilder implements DatagridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function fixFieldDescription(AdminInterface $admin, FieldDescriptionInterface $fieldDescription): void
+    public function fixFieldDescription(FieldDescriptionInterface $fieldDescription): void
     {
-        // set default values
-        $fieldDescription->setAdmin($admin);
+        $admin = $fieldDescription->getAdmin();
 
         if ($admin->getModelManager()->hasMetadata($admin->getClass())) {
             $metadata = $admin->getModelManager()->getMetadata($admin->getClass());
@@ -108,19 +86,24 @@ class DatagridBuilder implements DatagridBuilderInterface
             }
         }
 
+        $fieldDescription->setOption('field_name', $fieldDescription->getOption('field_name', $fieldDescription->getFieldName()));
         $fieldDescription->setOption('code', $fieldDescription->getOption('code', $fieldDescription->getName()));
         $fieldDescription->setOption('name', $fieldDescription->getOption('name', $fieldDescription->getName()));
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @return FilterInterface
      */
-    public function addFilter(DatagridInterface $datagrid, $type, FieldDescriptionInterface $fieldDescription, AdminInterface $admin)
+    public function addFilter(DatagridInterface $datagrid, $type, FieldDescriptionInterface $fieldDescription): void
     {
+        $admin = $fieldDescription->getAdmin();
+
         if (null === $type) {
-            $guessType = $this->guesser->guessType($admin->getClass(), $fieldDescription->getName(), $admin->getModelManager());
+            $guessType = $this->guesser->guess($fieldDescription);
+            if (null === $guessType) {
+                throw new \InvalidArgumentException(sprintf('Cannot guess a type for the field description "%s", You MUST provide a type.', $fieldDescription->getName()));
+            }
+
             $type = $guessType->getType();
             $fieldDescription->setType($type);
             $options = $guessType->getOptions();
@@ -136,7 +119,7 @@ class DatagridBuilder implements DatagridBuilderInterface
             $fieldDescription->setType($type);
         }
 
-        $this->fixFieldDescription($admin, $fieldDescription);
+        $this->fixFieldDescription($fieldDescription);
         $admin->addFilterFieldDescription($fieldDescription->getName(), $fieldDescription);
 
         $fieldDescription->mergeOption('field_options', ['required' => false]);
@@ -146,13 +129,13 @@ class DatagridBuilder implements DatagridBuilderInterface
             $filter->setLabel($admin->getLabelTranslatorStrategy()->getLabel($fieldDescription->getName(), 'filter', 'label'));
         }
 
-        return $datagrid->addFilter($filter);
+        $datagrid->addFilter($filter);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBaseDatagrid(AdminInterface $admin, array $values = [])
+    public function getBaseDatagrid(AdminInterface $admin, array $values = []): DatagridInterface
     {
         $defaultOptions = [];
         if ($this->csrfTokenEnabled) {

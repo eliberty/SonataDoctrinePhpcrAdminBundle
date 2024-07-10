@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -14,37 +14,33 @@ declare(strict_types=1);
 namespace Sonata\DoctrinePHPCRAdminBundle\Builder;
 
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadata;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\Admin\FieldDescriptionCollection;
-use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
 use Sonata\AdminBundle\Builder\ShowBuilderInterface;
-use Sonata\AdminBundle\Guesser\TypeGuesserInterface;
+use Sonata\AdminBundle\FieldDescription\FieldDescriptionCollection;
+use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
+use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
 
 class ShowBuilder implements ShowBuilderInterface
 {
-    /**
-     * @var TypeGuesserInterface
-     */
-    protected $guesser;
+    private TypeGuesserInterface $guesser;
 
     /**
-     * @var array
+     * @var string[]
      */
-    protected $templates;
+    private array $templates;
 
     /**
-     * @param array $templates Indexed by field type
+     * @param string[] $templates
      */
     public function __construct(TypeGuesserInterface $guesser, array $templates)
     {
-        $this->guesser = $guesser;
+        $this->guesser   = $guesser;
         $this->templates = $templates;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBaseList(array $options = [])
+    public function getBaseList(array $options = []): FieldDescriptionCollection
     {
         return new FieldDescriptionCollection();
     }
@@ -52,17 +48,21 @@ class ShowBuilder implements ShowBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addField(FieldDescriptionCollection $list, $type, FieldDescriptionInterface $fieldDescription, AdminInterface $admin): void
+    public function addField(FieldDescriptionCollection $list, ?string $type, FieldDescriptionInterface $fieldDescription): void
     {
         if (null === $type) {
-            $guessType = $this->guesser->guessType($admin->getClass(), $fieldDescription->getName(), $admin->getModelManager());
+            $guessType = $this->guesser->guess($fieldDescription);
+            if (null === $guessType) {
+                throw new \InvalidArgumentException(sprintf('Cannot guess a type for the field description "%s", You MUST provide a type.', $fieldDescription->getName()));
+            }
+
             $fieldDescription->setType($guessType->getType());
         } else {
             $fieldDescription->setType($type);
         }
 
-        $this->fixFieldDescription($admin, $fieldDescription);
-        $admin->addShowFieldDescription($fieldDescription->getName(), $fieldDescription);
+        $this->fixFieldDescription($fieldDescription);
+        $fieldDescription->getAdmin()->addShowFieldDescription($fieldDescription->getName(), $fieldDescription);
 
         $list->add($fieldDescription);
     }
@@ -74,9 +74,9 @@ class ShowBuilder implements ShowBuilderInterface
      *
      * @throws \RuntimeException if the $fieldDescription does not have a type
      */
-    public function fixFieldDescription(AdminInterface $admin, FieldDescriptionInterface $fieldDescription): void
+    public function fixFieldDescription(FieldDescriptionInterface $fieldDescription): void
     {
-        $fieldDescription->setAdmin($admin);
+        $admin = $fieldDescription->getAdmin();
 
         $metadata = null;
         if ($admin->getModelManager()->hasMetadata($admin->getClass())) {
@@ -127,15 +127,10 @@ class ShowBuilder implements ShowBuilderInterface
         }
     }
 
-    /**
-     * @param string $type
-     *
-     * @return string|null The template if found
-     */
-    private function getTemplate($type)
+    private function getTemplate(string $type): ?string
     {
         if (!isset($this->templates[$type])) {
-            return;
+            return null;
         }
 
         return $this->templates[$type];

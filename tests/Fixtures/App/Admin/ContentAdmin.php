@@ -44,7 +44,7 @@ class ContentAdmin extends Admin
         $this->managerRegistry = $managerRegistry;
     }
 
-    public function getExportFormats()
+    public function getExportFormats(): array
     {
         return [];
     }
@@ -53,7 +53,7 @@ class ContentAdmin extends Admin
     {
         return $object instanceof Content && $object->getTitle()
             ? $object->getTitle()
-            : $this->trans('link_add', [], 'SonataAdminBundle');
+            : $this->getTranslator()->trans('link_add', [], 'SonataAdminBundle');
     }
 
     public function configureShowFields(ShowMapper $showMapper)
@@ -104,14 +104,14 @@ class ContentAdmin extends Admin
             ->end();
     }
 
-    protected function configureListFields(ListMapper $listMapper)
+    protected function configureListFields(ListMapper $listMapper): void
     {
         $listMapper
             ->addIdentifier('id')
             ->add('title');
     }
 
-    protected function configureFormFields(FormMapper $formMapper)
+    protected function configureFormFields(FormMapper $formMapper): void
     {
         $formMapper
             ->with('form.group_general')
@@ -178,7 +178,7 @@ class ContentAdmin extends Admin
         );
     }
 
-    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
+    protected function configureDatagridFilters(DatagridMapper $datagridMapper): void
     {
         $datagridMapper
             ->add('title', StringFilter::class)

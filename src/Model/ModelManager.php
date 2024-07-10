@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -17,47 +17,41 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadata;
-use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
+use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
+use PHPCR\Util\PathHelper;
+use PHPCR\Util\UUIDHelper;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
+use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
 use Sonata\AdminBundle\Model\ModelManagerInterface;
-use Sonata\DoctrinePHPCRAdminBundle\Admin\FieldDescription;
 use Sonata\DoctrinePHPCRAdminBundle\Datagrid\ProxyQuery;
+use Sonata\DoctrinePHPCRAdminBundle\FieldDescription\FieldDescriptionFactory;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 
 class ModelManager implements ModelManagerInterface
 {
-    /**
-     * @var DocumentManager
-     */
-    protected $dm;
+    protected DocumentManager $dm;
+    protected FieldDescriptionFactory $fieldDescriptionFactory;
 
-    public function __construct(DocumentManager $dm)
+    public function __construct(DocumentManager $dm, FieldDescriptionFactory $fieldDescriptionFactory)
     {
-        $this->dm = $dm;
+        $this->dm                      = $dm;
+        $this->fieldDescriptionFactory = $fieldDescriptionFactory;
     }
 
     /**
      * Returns the related model's metadata.
-     *
-     * @param string $class
-     *
-     * @return ClassMetadata
      */
-    public function getMetadata($class)
+    public function getMetadata(string $class): ClassMetadata
     {
         return $this->dm->getMetadataFactory()->getMetadataFor($class);
     }
 
     /**
      * Returns true is the model has some metadata.
-     *
-     * @param string $class
-     *
-     * @return bool
      */
-    public function hasMetadata($class)
+    public function hasMetadata(string $class): bool
     {
         return $this->dm->getMetadataFactory()->hasMetadataFor($class);
     }
@@ -112,13 +106,21 @@ class ModelManager implements ModelManagerInterface
      *
      * {@inheritdoc}
      */
-    public function find($class, $id)
+    public function find(string $class, $id): ?object
     {
         if (!isset($id)) {
-            return;
+            return null;
         }
 
-        if (null === $class) {
+        if (null === $id || !preg_match('#^[0-9A-Za-z/\-_]+$#', $id)) {
+            return null;
+        }
+
+        if (!UUIDHelper::isUUID($id)) {
+            $id = PathHelper::absolutizePath($id, '/');
+        }
+
+        if (!$class) {
             return $this->dm->find(null, $id);
         }
 
@@ -127,38 +129,8 @@ class ModelManager implements ModelManagerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \RunTimeException if $name is not a string
-     *
-     * @return FieldDescription
      */
-    public function getNewFieldDescriptionInstance($class, $name, array $options = [])
-    {
-        if (!\is_string($name)) {
-            throw new \RunTimeException('The name argument must be a string');
-        }
-
-        $metadata = $this->getMetadata($class);
-
-        $fieldDescription = new FieldDescription();
-        $fieldDescription->setName($name);
-        $fieldDescription->setOptions($options);
-
-        if (isset($metadata->associationMappings[$name])) {
-            $fieldDescription->setAssociationMapping($metadata->associationMappings[$name]);
-        }
-
-        if (isset($metadata->fieldMappings[$name])) {
-            $fieldDescription->setFieldMapping($metadata->fieldMappings[$name]);
-        }
-
-        return $fieldDescription;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findBy($class, array $criteria = [])
+    public function findBy($class, array $criteria = []): array
     {
         return $this->dm->getRepository($class)->findBy($criteria);
     }
@@ -166,7 +138,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneBy($class, array $criteria = [])
+    public function findOneBy($class, array $criteria = []): ?object
     {
         return $this->dm->getRepository($class)->findOneBy($criteria);
     }
@@ -189,15 +161,7 @@ class ModelManager implements ModelManagerInterface
     {
         $fieldName = $parentAssociationMapping['fieldName'];
 
-        $metadata = $this->getMetadata($class);
-
-        $associatingMapping = $metadata->associationMappings[$parentAssociationMapping];
-
-        $fieldDescription = $this->getNewFieldDescriptionInstance($class, $fieldName);
-        $fieldDescription->setName($parentAssociationMapping);
-        $fieldDescription->setAssociationMapping($associatingMapping);
-
-        return $fieldDescription;
+        return $this->fieldDescriptionFactory->create($class, $fieldName);
     }
 
     /**
@@ -209,9 +173,10 @@ class ModelManager implements ModelManagerInterface
      *
      * @return ProxyQueryInterface
      */
-    public function createQuery($class, $alias = 'a')
+    public function createQuery(string $class): ProxyQueryInterface
     {
-        $qb = $this->getDocumentManager()->createQueryBuilder();
+        $alias = 'a';       // todo better to manage alias
+        $qb    = $this->getDocumentManager()->createQueryBuilder();
         $qb->from()->document($class, $alias);
 
         return new ProxyQuery($qb, $alias);
@@ -222,7 +187,7 @@ class ModelManager implements ModelManagerInterface
      *
      * @return mixed
      */
-    public function executeQuery($query)
+    public function executeQuery(object $query)
     {
         return $query->execute();
     }
@@ -245,10 +210,10 @@ class ModelManager implements ModelManagerInterface
      *
      * {@inheritdoc}
      */
-    public function getIdentifierValues($document)
+    public function getIdentifierValues(object $model): array
     {
-        $class = $this->getMetadata(ClassUtils::getClass($document));
-        $path = $class->reflFields[$class->identifier]->getValue($document);
+        $class = $this->getMetadata(ClassUtils::getClass($model));
+        $path  = $class->reflFields[$class->identifier]->getValue($model);
 
         return [$path];
     }
@@ -256,7 +221,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getIdentifierFieldNames($class)
+    public function getIdentifierFieldNames(string $class): array
     {
         return [$this->getModelIdentifier($class)];
     }
@@ -266,20 +231,20 @@ class ModelManager implements ModelManagerInterface
      *
      * {@inheritdoc}
      *
-     * @throws \InvalidArgumentException if $document is not an object or null
+     * @throws \InvalidArgumentException if $model is not an object or null
      */
-    public function getNormalizedIdentifier($document)
+    public function getNormalizedIdentifier(object $model): ?string
     {
-        if (is_scalar($document)) {
+        if (is_scalar($model)) {
             throw new \InvalidArgumentException('Invalid argument, object or null required');
         }
 
         // the document is not managed
-        if (!$document || !$this->getDocumentManager()->contains($document)) {
-            return;
+        if (!$model || !$this->getDocumentManager()->contains($model)) {
+            return null;
         }
 
-        $values = $this->getIdentifierValues($document);
+        $values = $this->getIdentifierValues($model);
 
         return $values[0];
     }
@@ -287,31 +252,33 @@ class ModelManager implements ModelManagerInterface
     /**
      * Currently only the leading slash is removed.
      *
-     * @param object $document
+     * @param object $model
      *
      * @return string|null
      */
-    public function getUrlsafeIdentifier($document)
+    public function getUrlsafeIdentifier(object $model): ?string
     {
-        $id = $this->getNormalizedIdentifier($document);
+        $id = $this->getNormalizedIdentifier($model);
         if (null !== $id) {
             return substr($id, 1);
         }
+
+        return null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addIdentifiersToQuery($class, ProxyQueryInterface $queryProxy, array $idx): void
+    public function addIdentifiersToQuery(string $class, ProxyQueryInterface $query, array $idx): void
     {
-        /* @var $queryProxy ProxyQuery */
-        $qb = $queryProxy->getQueryBuilder();
+        /** @var ProxyQuery $query */
+        $qb = $query->getQueryBuilder();
 
         $orX = $qb->andWhere()->orX();
 
         foreach ($idx as $id) {
             $path = $this->getBackendId($id);
-            $orX->same($path, $queryProxy->getAlias());
+            $orX->same($path, $query->getAlias());
         }
     }
 
@@ -339,7 +306,7 @@ class ModelManager implements ModelManagerInterface
     public function batchDelete($class, ProxyQueryInterface $queryProxy): void
     {
         try {
-            $i = 0;
+            $i   = 0;
             $res = $queryProxy->execute();
             foreach ($res as $object) {
                 $this->dm->remove($object);
@@ -384,7 +351,7 @@ class ModelManager implements ModelManagerInterface
             $values['_sort_by'] = $fieldDescription->getName();
         } else {
             $values['_sort_order'] = 'ASC';
-            $values['_sort_by'] = $fieldDescription->getName();
+            $values['_sort_by']    = $fieldDescription->getName();
         }
 
         return ['filter' => $values];
@@ -452,20 +419,16 @@ class ModelManager implements ModelManagerInterface
      *
      * @throws NoSuchPropertyException if the class has no magic setter and
      *                                 public property for a field in array
-     *
-     * @return object
      */
-    public function modelReverseTransform($class, array $array = [])
+    public function reverseTransform(object $object, array $array = []): void
     {
-        $instance = $this->getModelInstance($class);
-        $metadata = $this->getMetadata($class);
-
+        $metadata  = $this->getMetadata(\get_class($object));
         $reflClass = $metadata->reflClass;
         foreach ($array as $name => $value) {
             $reflection_property = false;
             // property or association ?
             if (\array_key_exists($name, $metadata->fieldMappings)) {
-                $property = $metadata->fieldMappings[$name]['fieldName'];
+                $property            = $metadata->fieldMappings[$name]['fieldName'];
                 $reflection_property = $metadata->reflFields[$name];
             } elseif (\array_key_exists($name, $metadata->associationMappings)) {
                 $property = $metadata->associationMappings[$name]['fieldName'];
@@ -481,22 +444,20 @@ class ModelManager implements ModelManagerInterface
                     throw new NoSuchPropertyException(sprintf('Method "%s()" is not public in class "%s"', $setter, $reflClass->getName()));
                 }
 
-                $instance->$setter($value);
+                $object->$setter($value);
             } elseif ($reflClass->hasMethod('__set')) {
                 // needed to support magic method __set
-                $instance->$property = $value;
+                $object->$property = $value;
             } elseif ($reflClass->hasProperty($property)) {
                 if (!$reflClass->getProperty($property)->isPublic()) {
                     throw new NoSuchPropertyException(sprintf('Property "%s" is not public in class "%s". Maybe you should create the method "set%s()"?', $property, $reflClass->getName(), ucfirst($property)));
                 }
 
-                $instance->$property = $value;
+                $object->$property = $value;
             } elseif ($reflection_property) {
-                $reflection_property->setValue($instance, $value);
+                $reflection_property->setValue($object, $value);
             }
         }
-
-        return $instance;
     }
 
     /**
@@ -552,7 +513,7 @@ class ModelManager implements ModelManagerInterface
      *
      * Not really implemented.
      */
-    public function getExportFields($class)
+    public function getExportFields(string $class): array
     {
         return [];
     }
@@ -583,5 +544,10 @@ class ModelManager implements ModelManagerInterface
 
         return $values['_sort_by']->getName() === $fieldDescription->getName()
             || $values['_sort_by']->getName() === $fieldDescription->getOption('sortable');
+    }
+
+    public function supportsQuery(object $query): bool
+    {
+        return $query instanceof ProxyQuery || $query instanceof QueryBuilder;
     }
 }

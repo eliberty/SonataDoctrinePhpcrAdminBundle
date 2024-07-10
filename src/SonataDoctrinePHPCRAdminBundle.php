@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -15,8 +15,6 @@ namespace Sonata\DoctrinePHPCRAdminBundle;
 
 use Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler\AddGuesserCompilerPass;
 use Sonata\DoctrinePHPCRAdminBundle\DependencyInjection\Compiler\AddTemplatesCompilerPass;
-use Sonata\DoctrinePHPCRAdminBundle\Form\Type\ChoiceFieldMaskType;
-use Sonata\DoctrinePHPCRAdminBundle\Form\Type\Filter\ChoiceType;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Admin\FieldDescriptionCollection;
 use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
-use Sonata\AdminBundle\Guesser\TypeGuesserInterface;
+use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
 use Sonata\DoctrinePHPCRAdminBundle\Admin\Admin;
 use Sonata\DoctrinePHPCRAdminBundle\Admin\FieldDescription;
 use Sonata\DoctrinePHPCRAdminBundle\Builder\ListBuilder;

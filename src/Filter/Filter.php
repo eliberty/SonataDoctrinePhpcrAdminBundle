@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -19,11 +19,6 @@ use Sonata\DoctrinePHPCRAdminBundle\Datagrid\ProxyQuery;
 abstract class Filter extends BaseFilter
 {
     /**
-     * @var bool
-     */
-    protected $active = false;
-
-    /**
      * @param ProxyQuery $queryBuilder
      * @param mixed      $value
      */
@@ -31,14 +26,6 @@ abstract class Filter extends BaseFilter
     {
         $this->value = $value;
         $this->filter($queryBuilder, $queryBuilder->getAlias(), $this->getFieldName(), $value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isActive()
-    {
-        return $this->active;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sonata\DoctrinePHPCRAdminBundle\Filter;
 
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Form\Type\Filter\DefaultType;
 use Sonata\DoctrinePHPCRAdminBundle\Filter\Filter as BaseFilter;
 use Sonata\Form\Type\BooleanType;
@@ -24,42 +25,51 @@ class BooleanFilter extends BaseFilter
     /**
      * {@inheritdoc}
      */
-    public function filter(ProxyQueryInterface $proxyQuery, $alias, $field, $data): void
+    public function filter(ProxyQueryInterface $query, string $alias, string $field, FilterData $data): bool
     {
-        if (!$data || !\is_array($data) || !\array_key_exists('type', $data) || !\array_key_exists('value', $data)) {
-            return;
+        if (!$data->hasValue()) {
+            return false;
         }
 
-        if (\is_array($data['value']) || !\in_array($data['value'], [BooleanType::TYPE_NO, BooleanType::TYPE_YES], true)) {
-            return;
+        $value = $data->getValue();
+
+        if (\is_array($value) || !\in_array($value, [BooleanType::TYPE_NO, BooleanType::TYPE_YES], true)) {
+            return false;
         }
 
-        $where = $this->getWhere($proxyQuery);
-        $where->eq()->field('a.'.$field)->literal(BooleanType::TYPE_YES === $data['value'] ? true : false);
+        $where = $this->getWhere($query);
+        $where->eq()->field('a.'.$field)->literal(BooleanType::TYPE_YES === $value ? true : false);
 
         // filter is active as we have now modified the query
-        $this->active = true;
+        $this->setActive(true);
+
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDefaultOptions()
+    public function getDefaultOptions(): array
     {
         return [];
     }
 
+    public function getParent(): string
+    {
+        return DefaultType::class;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function getRenderSettings()
+    public function getFormOptions(): array
     {
-        return [DefaultType::class, [
-            'field_type' => $this->getFieldType(),
-            'field_options' => $this->getFieldOptions(),
-            'operator_type' => HiddenType::class,
+        return [
+            'field_type'       => $this->getFieldType(),
+            'field_options'    => $this->getFieldOptions(),
+            'operator_type'    => HiddenType::class,
             'operator_options' => [],
-            'label' => $this->getLabel(),
-        ]];
+            'label'            => $this->getLabel(),
+        ];
     }
 }

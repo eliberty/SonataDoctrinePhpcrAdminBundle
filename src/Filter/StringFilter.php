@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sonata\DoctrinePHPCRAdminBundle\Filter;
 
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\DoctrinePHPCRAdminBundle\Form\Type\Filter\ChoiceType;
 
 class StringFilter extends Filter
@@ -21,23 +22,23 @@ class StringFilter extends Filter
     /**
      * {@inheritdoc}
      */
-    public function filter(ProxyQueryInterface $proxyQuery, $alias, $field, $data): void
+    public function filter(ProxyQueryInterface $query, string $alias, string $field, FilterData $data): bool
     {
-        if (!$data || !\is_array($data) || !\array_key_exists('value', $data) || null === $data['value']) {
-            return;
+        if (!$data->hasValue()) {
+            return false;
         }
 
-        $value = trim((string) $data['value']);
-        $data['type'] = empty($data['type']) ? ChoiceType::TYPE_CONTAINS : $data['type'];
+        $value = trim((string) $data->getValue());
+        $type  = $data->getType() ?? ChoiceType::TYPE_CONTAINS;
 
         if ('' === $value) {
-            return;
+            return false;
         }
 
-        $where = $this->getWhere($proxyQuery);
+        $where                 = $this->getWhere($query);
         $isComparisonLowerCase = $this->getOption('compare_case_insensitive');
-        $value = $isComparisonLowerCase ? strtolower($value) : $value;
-        switch ($data['type']) {
+        $value                 = $isComparisonLowerCase ? strtolower($value) : $value;
+        switch ($type) {
             case ChoiceType::TYPE_EQUAL:
                 if ($isComparisonLowerCase) {
                     $where->eq()->lowerCase()->field('a.'.$field)->end()->literal($value);
@@ -64,29 +65,36 @@ class StringFilter extends Filter
         }
 
         // filter is active as we have now modified the query
-        $this->active = true;
+        $this->setActive(true);
+
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDefaultOptions()
+    public function getDefaultOptions(): array
     {
         return [
-            'format' => '%%%s%%',
+            'format'             => '%%%s%%',
             'compare_lower_case' => false,
         ];
     }
 
+    public function getParent(): string
+    {
+        return ChoiceType::class;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function getRenderSettings()
+    public function getFormOptions(): array
     {
-        return ['Sonata\DoctrinePHPCRAdminBundle\Form\Type\Filter\ChoiceType', [
-            'field_type' => $this->getFieldType(),
+        return [
+            'field_type'    => $this->getFieldType(),
             'field_options' => $this->getFieldOptions(),
-            'label' => $this->getLabel(),
-        ]];
+            'label'         => $this->getLabel(),
+        ];
     }
 }

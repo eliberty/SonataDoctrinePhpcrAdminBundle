@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -14,23 +14,24 @@ declare(strict_types=1);
 namespace Sonata\DoctrinePHPCRAdminBundle\Filter;
 
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
+use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Form\Type\Filter\DefaultType;
 use Sonata\AdminBundle\Form\Type\Operator\EqualOperatorType;
+use Sonata\DoctrinePHPCRAdminBundle\Form\Type\Filter\ChoiceType;
 
 class ChoiceFilter extends Filter
 {
     /**
      * {@inheritdoc}
      */
-    public function filter(ProxyQueryInterface $proxyQuery, $alias, $field, $data): void
+    public function filter(ProxyQueryInterface $query, string $alias, string $field, FilterData $data): bool
     {
-        if (!$data || !\is_array($data) || !\array_key_exists('type', $data) || !\array_key_exists('value', $data)) {
-            return;
+        if (!$data->hasValue()) {
+            return false;
         }
 
-        $values = (array) $data['value'];
-        $type = $data['type'];
+        $values = (array) $data->getValue();
+        $type   = $data->getType();
 
         // clean values
         foreach ($values as $key => $value) {
@@ -44,10 +45,10 @@ class ChoiceFilter extends Filter
 
         // if values not set, do not do this filter
         if (!$values) {
-            return;
+            return false;
         }
 
-        $andX = $this->getWhere($proxyQuery)->andX();
+        $andX = $this->getWhere($query)->andX();
 
         foreach ($values as $value) {
             if (ChoiceType::TYPE_NOT_CONTAINS === $type) {
@@ -60,27 +61,34 @@ class ChoiceFilter extends Filter
         }
 
         // filter is active as we have now modified the query
-        $this->active = true;
+        $this->setActive(true);
+
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDefaultOptions()
+    public function getDefaultOptions(): array
     {
         return [];
     }
 
+    public function getParent(): string
+    {
+        return DefaultType::class;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function getRenderSettings()
+    public function getFormOptions(): array
     {
-        return [DefaultType::class, [
+        return [
             'operator_type' => EqualOperatorType::class,
-            'field_type' => $this->getFieldType(),
+            'field_type'    => $this->getFieldType(),
             'field_options' => $this->getFieldOptions(),
-            'label' => $this->getLabel(),
-        ]];
+            'label'         => $this->getLabel(),
+        ];
     }
 }

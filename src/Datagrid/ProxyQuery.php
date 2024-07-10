@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Sonata Project package.
@@ -86,7 +86,7 @@ class ProxyQuery implements ProxyQueryInterface
             throw new \InvalidArgumentException('$alias must be a non empty string');
         }
 
-        $this->qb = $queryBuilder;
+        $this->qb    = $queryBuilder;
         $this->alias = $alias;
     }
 
@@ -169,7 +169,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * {@inheritdoc}
      */
-    public function setSortBy($parentAssociationMappings, $fieldMapping)
+    public function setSortBy(array $parentAssociationMappings, array $fieldMapping): self
     {
         $this->sortBy = $fieldMapping['fieldName'];
 
@@ -181,7 +181,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @return string the property to be sorted by
      */
-    public function getSortBy()
+    public function getSortBy(): ?string
     {
         return $this->sortBy;
     }
@@ -195,7 +195,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @throws \InvalidArgumentException if $sortOrder is not one of ASC or DESC
      */
-    public function setSortOrder($sortOrder)
+    public function setSortOrder(string $sortOrder): self
     {
         if (!\in_array($sortOrder, ['ASC', 'DESC'], true)) {
             throw new \InvalidArgumentException(sprintf('The parameter $sortOrder must be one of "ASC" or "DESC", got "%s"', $sortOrder));
@@ -210,7 +210,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @return string ASC or DESC
      */
-    public function getSortOrder()
+    public function getSortOrder(): ?string
     {
         return $this->sortOrder;
     }
@@ -231,7 +231,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @return QueryBuilder
      */
-    public function getQueryBuilder()
+    public function getQueryBuilder(): QueryBuilder
     {
         return $this->qb;
     }
@@ -241,7 +241,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * {@inheritdoc}
      */
-    public function setFirstResult($firstResult)
+    public function setFirstResult(?int $firstResult): self
     {
         $this->qb->setFirstResult($firstResult);
 
@@ -253,7 +253,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @return int the offset
      */
-    public function getFirstResult()
+    public function getFirstResult(): ?int
     {
         return $this->qb->getFirstResult();
     }
@@ -263,7 +263,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * {@inheritdoc}
      */
-    public function setMaxResults($maxResults)
+    public function setMaxResults(?int $maxResults): self
     {
         $this->qb->setMaxResults($maxResults);
 
@@ -275,7 +275,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @return int
      */
-    public function getMaxResults()
+    public function getMaxResults(): ?int
     {
         return $this->qb->getMaxResults();
     }
@@ -283,7 +283,7 @@ class ProxyQuery implements ProxyQueryInterface
     /**
      * Sets the document manager.
      */
-    public function setDocumentManager(DocumentManager $documentManager)
+    public function setDocumentManager(DocumentManager $documentManager): self
     {
         $this->documentManager = $documentManager;
 
@@ -295,7 +295,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @return DocumentManager $documentManager
      */
-    public function getDocumentManager()
+    public function getDocumentManager(): DocumentManager
     {
         return $this->documentManager;
     }

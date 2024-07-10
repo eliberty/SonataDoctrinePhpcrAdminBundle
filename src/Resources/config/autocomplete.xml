@@ -3,6 +3,7 @@
     <services>
         <service id="sonata.admin.doctrine_phpcr.autocomplete_controller" class="Sonata\DoctrinePHPCRAdminBundle\Controller\AutocompleteController">
             <argument type="service" id="sonata.admin.pool"/>
+            <argument type="service" id="doctrine_phpcr.odm.default_document_manager"/>
         </service>
     </services>
 </container>

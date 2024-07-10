@@ -3,6 +3,7 @@
     <services>
         <service id="sonata.admin.manager.doctrine_phpcr" class="Sonata\DoctrinePHPCRAdminBundle\Model\ModelManager">
             <argument type="service" id="doctrine_phpcr.odm.default_document_manager"/>
+            <argument type="service" id="sonata.admin.field_description_factory.doctrine_phpcr"/>
             <tag name="sonata.admin.manager"/>
         </service>
         <!-- FormBuilder -->
@@ -18,8 +19,8 @@
             <argument type="service" id="doctrine_phpcr"/>
             <tag name="sonata.admin.guesser.doctrine_phpcr_list"/>
         </service>
-        <service id="sonata.admin.guesser.doctrine_phpcr_list_chain" class="Sonata\AdminBundle\Guesser\TypeGuesserChain">
-            <argument/>
+        <service id="sonata.admin.guesser.doctrine_phpcr_list_chain" class="Sonata\AdminBundle\FieldDescription\TypeGuesserChain">
+            <argument type="collection"/>
         </service>
         <!-- ShowBuilder  -->
         <service id="sonata.admin.builder.doctrine_phpcr_show" class="Sonata\DoctrinePHPCRAdminBundle\Builder\ShowBuilder">
@@ -30,8 +31,8 @@
             <argument type="service" id="doctrine_phpcr"/>
             <tag name="sonata.admin.guesser.doctrine_phpcr_show"/>
         </service>
-        <service id="sonata.admin.guesser.doctrine_phpcr_show_chain" class="Sonata\AdminBundle\Guesser\TypeGuesserChain">
-            <argument/>
+        <service id="sonata.admin.guesser.doctrine_phpcr_show_chain" class="Sonata\AdminBundle\FieldDescription\TypeGuesserChain">
+            <argument type="collection"/>
         </service>
         <!-- DatagridBuilder guesser -->
         <service id="sonata.admin.builder.doctrine_phpcr_datagrid" class="Sonata\DoctrinePHPCRAdminBundle\Builder\DatagridBuilder">
@@ -44,13 +45,19 @@
             <argument type="service" id="doctrine_phpcr"/>
             <tag name="sonata.admin.guesser.doctrine_phpcr_datagrid"/>
         </service>
-        <service id="sonata.admin.guesser.doctrine_phpcr_datagrid_chain" class="Sonata\AdminBundle\Guesser\TypeGuesserChain">
-            <argument/>
+        <service id="sonata.admin.guesser.doctrine_phpcr_datagrid_chain" class="Sonata\AdminBundle\FieldDescription\TypeGuesserChain">
+            <argument type="collection"/>
         </service>
         <!-- <service id="sonata.admin.description.position_enhancer" class="Sonata\DoctrinePHPCRAdminBundle\Description\PositionEnhancer">
             <argument type="service" id="doctrine_phpcr"/>
             <argument>%doctrine_phpcr.default_session%</argument>
             <tag name="cmf_resource.description.enhancer" alias="doctrine_phpcr_position"/>
         </service> -->
+        <service id="sonata.admin.data_source.doctrine_phpcr" class="Sonata\DoctrinePHPCRAdminBundle\Exporter\DataSource">
+            <argument/>
+        </service>
+        <service id="sonata.admin.field_description_factory.doctrine_phpcr" class="Sonata\DoctrinePHPCRAdminBundle\FieldDescription\FieldDescriptionFactory">
+            <argument type="service" id="doctrine_phpcr.odm.default_document_manager"/>
+        </service>
     </services>
 </container>
