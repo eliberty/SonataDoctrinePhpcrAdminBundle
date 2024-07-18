@@ -28,6 +28,10 @@ final class FieldDescription extends BaseFieldDescription
             return $this->associationMapping['referringDocument'];
         }
 
+        if (isset($this->associationMapping['declared'])) {
+            return $this->associationMapping['declared'];
+        }
+
         return null;
     }
 

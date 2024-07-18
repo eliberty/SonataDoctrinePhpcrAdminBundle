@@ -112,14 +112,6 @@ class ModelManager implements ModelManagerInterface
             return null;
         }
 
-        if (null === $id || !preg_match('#^[0-9A-Za-z/\-_]+$#', $id)) {
-            return null;
-        }
-
-        if (!UUIDHelper::isUUID($id)) {
-            $id = PathHelper::absolutizePath($id, '/');
-        }
-
         if (!$class) {
             return $this->dm->find(null, $id);
         }
