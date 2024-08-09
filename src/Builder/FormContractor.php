@@ -82,6 +82,9 @@ class FormContractor implements FormContractorInterface
 
         if ($metadata && $metadata->hasAssociation($fieldDescription->getName()) && \in_array($fieldDescription->getMappingType(), $mappingTypes, true)) {
             $admin->attachAdminClass($fieldDescription);
+            if ($fieldDescription->hasAssociationAdmin() && !$fieldDescription->getAssociationAdmin()->hasSubject()) {
+                $fieldDescription->getAssociationAdmin()->setSubject($fieldDescription->getAssociationAdmin()->getNewInstance());
+            }  
         }
     }
 
@@ -143,6 +146,7 @@ class FormContractor implements FormContractorInterface
                 }
 
                 $formOptions['data_class'] = $fieldDescription->getAssociationAdmin()->getClass();
+                $formOptions['empty_data']   = static fn (): object => $fieldDescription->getAssociationAdmin()->getNewInstance();
                 $fieldDescription->setOption('edit', $fieldDescription->getOption('edit', 'admin'));
 
                 break;
@@ -157,6 +161,7 @@ class FormContractor implements FormContractorInterface
                 $formOptions['type_options'] = [
                     'sonata_field_description' => $fieldDescription,
                     'data_class'               => $fieldDescription->getAssociationAdmin()->getClass(),
+                    'empty_data' => static fn (): object => $fieldDescription->getAssociationAdmin()->getNewInstance(),
                 ];
 
             break;
