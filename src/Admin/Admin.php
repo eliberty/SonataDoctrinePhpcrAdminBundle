@@ -15,6 +15,7 @@ namespace Sonata\DoctrinePHPCRAdminBundle\Admin;
 
 use PHPCR\Util\PathHelper;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\DoctrinePHPCRAdminBundle\Datagrid\ProxyQuery;
@@ -103,5 +104,18 @@ class Admin extends AbstractAdmin
                 $collection->get($name)->addOptions(['expose' => true]);
             }
         }
+    }
+
+    public function getPerPageOptions(): array
+    {
+        return [10, 25, 50, 100, 250];
+    }
+
+    protected function configureDefaultSortValues(array &$sortValues): void
+    {
+        $sortValues[DatagridInterface::PAGE]       = 1;
+        $sortValues[DatagridInterface::PER_PAGE]   = 25;
+        $sortValues[DatagridInterface::SORT_BY]    = 'id';
+        $sortValues[DatagridInterface::SORT_ORDER] = 'ASC';
     }
 }
