@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace Sonata\DoctrinePHPCRAdminBundle\Twig\Extension;
 
 use PHPCR\NodeInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-class SonataDoctrinePHPCRAdminExtension extends \Twig_Extension
+class SonataDoctrinePHPCRAdminExtension extends AbstractExtension
 {
     /**
      * {@inheritdoc}
@@ -23,8 +25,8 @@ class SonataDoctrinePHPCRAdminExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('render_node_property', [$this, 'renderNodeProperty'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFilter('render_node_path', [$this, 'renderNodePath'], ['is_safe' => ['html']]),
+            new TwigFilter('render_node_property', [$this, 'renderNodeProperty'], ['is_safe' => ['html']]),
+            new TwigFilter('render_node_path', [$this, 'renderNodePath'], ['is_safe' => ['html']]),
         ];
     }
 
