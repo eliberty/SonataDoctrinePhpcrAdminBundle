@@ -76,7 +76,7 @@ class SonataDoctrinePHPCRAdminExtension extends AbstractSonataAdminExtension
 
     }
 
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return 'http://sonata-project.org/schema/dic/doctrine_phpcr_admin';
     }
