@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "doctrine/phpcr-bundle": "^2.0",
+        "doctrine/phpcr-bundle": "^2.0 || ^3.0",
         "doctrine/phpcr-odm": "^1.5.2 || ^2.0",
         "sonata-project/admin-bundle": "^4",
         "sonata-project/block-bundle": "^4",
