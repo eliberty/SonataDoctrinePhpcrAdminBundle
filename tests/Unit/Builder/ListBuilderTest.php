@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrinePHPCRAdminBundle\Tests\Unit\Builder;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -35,27 +36,27 @@ class ListBuilderTest extends TestCase
     /**
      * @var Admin
      */
-    private $admin;
+    private ?MockObject $admin = null;
 
     /**
      * @var ModelManager
      */
-    private $modelManager;
+    private ?MockObject $modelManager = null;
 
     /**
      * @var FieldDescriptionInterface
      */
-    private $fieldDescription;
+    private ?MockObject $fieldDescription = null;
 
     /**
      * @var FieldDescriptionCollection
      */
-    private $fieldDescriptionCollection;
+    private ?MockObject $fieldDescriptionCollection = null;
 
     /**
      * @var TypeGuesserInterface
      */
-    private $guesser;
+    private MockObject $guesser;
 
     protected function setUp(): void
     {

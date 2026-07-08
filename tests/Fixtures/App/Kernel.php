@@ -23,7 +23,7 @@ class Kernel extends TestKernel
         parent::__construct('test', true);
     }
 
-    public function configure()
+    public function configure(): void
     {
         $this->registerConfiguredBundles();
         $this->requireBundleSet('default');
@@ -52,7 +52,7 @@ class Kernel extends TestKernel
         return sys_get_temp_dir().'/SonataDoctrinePhpcrAdminBundle/logs';
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(__DIR__.'/config/config.php');
         $loader->load(__DIR__.'/config/admin-test.xml');

@@ -24,7 +24,7 @@ class NodeNameFilterTest extends BaseTestCase
         $this->filter = new NodeNameFilter();
     }
 
-    public function getChoiceTypeForEmptyTests()
+    public function getChoiceTypeForEmptyTests(): int
     {
         return ChoiceType::TYPE_EQUAL;
     }
@@ -56,7 +56,7 @@ class NodeNameFilterTest extends BaseTestCase
         static::assertFalse($this->filter->isActive());
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             ['eqNodeName', ChoiceType::TYPE_EQUAL],

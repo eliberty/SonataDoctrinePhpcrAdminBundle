@@ -98,7 +98,7 @@ class ProxyQuery implements ProxyQueryInterface
      *
      * @codeCoverageIgnore
      */
-    public function __call($name, $args)
+    public function __call(string $name, array $args)
     {
         return \call_user_func_array([$this->qb, $name], $args);
     }
@@ -228,8 +228,6 @@ class ProxyQuery implements ProxyQueryInterface
 
     /**
      * Gets the QueryBuilder.
-     *
-     * @return QueryBuilder
      */
     public function getQueryBuilder(): QueryBuilder
     {

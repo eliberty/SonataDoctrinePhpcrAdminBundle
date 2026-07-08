@@ -41,7 +41,7 @@ class DateFilterTest extends BaseTestCase
         static::assertFalse($this->filter->isActive());
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             ['gte', DateType::TYPE_GREATER_EQUAL],

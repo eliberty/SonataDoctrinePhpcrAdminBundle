@@ -139,17 +139,15 @@ class ModelManager implements ModelManagerInterface
      * @return DocumentManager The PHPCR-ODM document manager responsible for
      *                         this model
      */
-    public function getDocumentManager()
+    public function getDocumentManager(): DocumentManager
     {
         return $this->dm;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @return FieldDescriptionInterface
      */
-    public function getParentFieldDescription($parentAssociationMapping, $class)
+    public function getParentFieldDescription($parentAssociationMapping, $class): FieldDescriptionInterface
     {
         $fieldName = $parentAssociationMapping['fieldName'];
 
@@ -162,8 +160,6 @@ class ModelManager implements ModelManagerInterface
      *                      defaults to 'a'
      *
      * @throws \InvalidArgumentException if alias is not a string or an empty string
-     *
-     * @return ProxyQueryInterface
      */
     public function createQuery(string $class): ProxyQueryInterface
     {
@@ -187,7 +183,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getModelIdentifier($classname)
+    public function getModelIdentifier($classname): ?string
     {
         return $this->getMetadata($classname)->identifier;
     }
@@ -244,9 +240,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * Currently only the leading slash is removed.
      *
-     * @param object $model
      *
-     * @return string|null
      */
     public function getUrlsafeIdentifier(object $model): ?string
     {
@@ -329,7 +323,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getSortParameters(FieldDescriptionInterface $fieldDescription, DatagridInterface $datagrid)
+    public function getSortParameters(FieldDescriptionInterface $fieldDescription, DatagridInterface $datagrid): array
     {
         $values = $datagrid->getValues();
 
@@ -352,7 +346,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPaginationParameters(DatagridInterface $datagrid, $page)
+    public function getPaginationParameters(DatagridInterface $datagrid, $page): array
     {
         $values = $datagrid->getValues();
 
@@ -455,7 +449,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getModelCollectionInstance($class)
+    public function getModelCollectionInstance($class): ArrayCollection
     {
         return new ArrayCollection();
     }
@@ -521,7 +515,7 @@ class ModelManager implements ModelManagerInterface
      *
      * @deprecated
      */
-    protected function camelize($property)
+    protected function camelize($property): ?string
     {
         return preg_replace(['/(^|_)+(.)/e', '/\.(.)/e'], ["strtoupper('\\2')", "'_'.strtoupper('\\1')"], $property);
     }

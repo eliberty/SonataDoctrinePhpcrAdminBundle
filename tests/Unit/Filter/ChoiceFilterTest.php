@@ -45,7 +45,7 @@ class ChoiceFilterTest extends BaseTestCase
         static::assertFalse($this->filter->isActive());
     }
 
-    public function getMeaninglessValues()
+    public function getMeaninglessValues(): array
     {
         return [
             ['  '],
@@ -65,7 +65,7 @@ class ChoiceFilterTest extends BaseTestCase
         static::assertFalse($this->filter->isActive());
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             ['eq', ChoiceType::TYPE_EQUAL],
@@ -92,7 +92,7 @@ class ChoiceFilterTest extends BaseTestCase
         static::assertTrue($this->filter->isActive());
     }
 
-    public function getFiltersMultiple()
+    public function getFiltersMultiple(): array
     {
         return [
             [[

@@ -21,7 +21,7 @@ class StringFilterTest extends BaseTestCase
     /**
      * @var StringFilter
      */
-    private $filter;
+    private StringFilter $filter;
 
     protected function setUp(): void
     {
@@ -59,7 +59,7 @@ class StringFilterTest extends BaseTestCase
         static::assertFalse($this->filter->isActive());
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             [ChoiceType::TYPE_EQUAL, [

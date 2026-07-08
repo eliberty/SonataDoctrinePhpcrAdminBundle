@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrinePHPCRAdminBundle\Tests\Unit\Datagrid;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
 use Doctrine\ODM\PHPCR\Query\Query;
@@ -24,12 +25,12 @@ class ProxyQueryTest extends TestCase
     /**
      * @var QueryBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $qb;
+    private MockObject $qb;
 
     /**
      * @var ProxyQuery
      */
-    private $pq;
+    private ProxyQuery $pq;
 
     protected function setUp(): void
     {

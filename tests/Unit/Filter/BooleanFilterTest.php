@@ -21,7 +21,7 @@ class BooleanFilterTest extends BaseTestCase
     /**
      * @var BooleanFilter
      */
-    private $filter;
+    private BooleanFilter $filter;
 
     protected function setUp(): void
     {
@@ -53,7 +53,7 @@ class BooleanFilterTest extends BaseTestCase
         static::assertFalse($this->filter->isActive());
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             ['eq', BooleanType::TYPE_YES, true],

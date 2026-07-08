@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrinePHPCRAdminBundle\Tests\Unit\Filter;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
 use Doctrine\ODM\PHPCR\Tools\Test\QueryBuilderTester;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +34,7 @@ class BaseTestCase extends TestCase
     /**
      * @var ProxyQuery
      */
-    protected $proxyQuery;
+    protected MockObject $proxyQuery;
 
     protected function setUp(): void
     {

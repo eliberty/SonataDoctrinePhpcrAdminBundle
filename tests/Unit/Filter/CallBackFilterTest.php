@@ -62,7 +62,7 @@ class CallBackFilterTest extends BaseTestCase
         static::assertTrue($filter->isActive());
     }
 
-    public function callbackMethod(ProxyQueryInterface $proxyQuery, $alias, $field, $data)
+    public function callbackMethod(ProxyQueryInterface $proxyQuery, $alias, $field, $data): bool
     {
         $queryBuilder = $proxyQuery->getQueryBuilder();
         $queryBuilder->andWhere()->eq()->field('a.'.$field)->literal($data['value']);

@@ -55,7 +55,7 @@ class SonataDoctrinePHPCRAdminExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'sonata_doctrine_phpcr_admin';
     }

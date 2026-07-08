@@ -2,6 +2,20 @@
 
 declare(strict_types=1);
 
+use Symfony\Cmf\Bundle\ResourceBundle\CmfResourceBundle;
+use Symfony\Cmf\Bundle\ResourceRestBundle\CmfResourceRestBundle;
+use JMS\SerializerBundle\JMSSerializerBundle;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Knp\Bundle\MenuBundle\KnpMenuBundle;
+use Sonata\AdminBundle\SonataAdminBundle;
+use Sonata\CoreBundle\SonataCoreBundle;
+use Sonata\Doctrine\Bridge\Symfony\Bundle\SonataDoctrineBundle;
+use Sonata\BlockBundle\SonataBlockBundle;
+use Sonata\DoctrinePHPCRAdminBundle\SonataDoctrinePHPCRAdminBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Cmf\Bundle\TreeBrowserBundle\CmfTreeBrowserBundle;
+use Doctrine\Bundle\PHPCRBundle\DoctrinePHPCRBundle;
+
 /*
  * This file is part of the Sonata Project package.
  *
@@ -12,17 +26,17 @@ declare(strict_types=1);
  */
 
 return [
-    Symfony\Cmf\Bundle\ResourceBundle\CmfResourceBundle::class => ['all' => true],
-    Symfony\Cmf\Bundle\ResourceRestBundle\CmfResourceRestBundle::class => ['all' => true],
-    JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
-    Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
-    Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
-    Sonata\AdminBundle\SonataAdminBundle::class => ['all' => true],
-    Sonata\CoreBundle\SonataCoreBundle::class => ['all' => true],
-    Sonata\Doctrine\Bridge\Symfony\Bundle\SonataDoctrineBundle::class => ['all' => true],
-    Sonata\BlockBundle\SonataBlockBundle::class => ['all' => true],
-    Sonata\DoctrinePHPCRAdminBundle\SonataDoctrinePHPCRAdminBundle::class => ['all' => true],
-    Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
-    Symfony\Cmf\Bundle\TreeBrowserBundle\CmfTreeBrowserBundle::class => ['all' => true],
-    Doctrine\Bundle\PHPCRBundle\DoctrinePHPCRBundle::class => ['all' => true],
+    CmfResourceBundle::class => ['all' => true],
+    CmfResourceRestBundle::class => ['all' => true],
+    JMSSerializerBundle::class => ['all' => true],
+    DoctrineBundle::class => ['all' => true],
+    KnpMenuBundle::class => ['all' => true],
+    SonataAdminBundle::class => ['all' => true],
+    SonataCoreBundle::class => ['all' => true],
+    SonataDoctrineBundle::class => ['all' => true],
+    SonataBlockBundle::class => ['all' => true],
+    SonataDoctrinePHPCRAdminBundle::class => ['all' => true],
+    TwigBundle::class => ['all' => true],
+    CmfTreeBrowserBundle::class => ['all' => true],
+    DoctrinePHPCRBundle::class => ['all' => true],
 ];

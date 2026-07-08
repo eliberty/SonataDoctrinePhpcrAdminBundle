@@ -70,7 +70,7 @@ class ChoiceType extends AbstractType
     /**
      * NEXT_MAJOR: remove this method.
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getBlockPrefix();
     }

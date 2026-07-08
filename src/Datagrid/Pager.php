@@ -26,10 +26,8 @@ class Pager extends BasePager
 {
     /**
      * Returns a query for counting the total results.
-     *
-     * @return int
      */
-    public function computeNbResult()
+    public function computeNbResult(): int
     {
         return \count($this->getResults(PHPCRQuery::HYDRATE_PHPCR));
     }

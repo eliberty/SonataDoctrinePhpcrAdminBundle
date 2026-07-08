@@ -54,7 +54,7 @@ class NumberFilterTest extends BaseTestCase
         static::assertFalse($this->filter->isActive());
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             ['gte', NumberType::TYPE_GREATER_EQUAL, 2],

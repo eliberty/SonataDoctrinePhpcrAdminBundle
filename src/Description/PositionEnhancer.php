@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrinePHPCRAdminBundle\Description;
 
+use PHPCR\SessionInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPCR\PathNotFoundException;
 use PHPCR\Util\PathHelper;
@@ -29,7 +30,7 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 class PositionEnhancer implements DescriptionEnhancerInterface
 {
     /**
-     * @var \PHPCR\SessionInterface
+     * @var SessionInterface
      */
     private $session;
 
@@ -73,7 +74,7 @@ class PositionEnhancer implements DescriptionEnhancerInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(PuliResource $resource)
+    public function supports(PuliResource $resource): bool
     {
         if (!$resource instanceof CmfResource) {
             return false;

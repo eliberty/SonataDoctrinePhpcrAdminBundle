@@ -39,7 +39,7 @@ class ContentAdmin extends Admin
      */
     private $managerRegistry;
 
-    public function setManagerRegistry(ManagerRegistry $managerRegistry)
+    public function setManagerRegistry(ManagerRegistry $managerRegistry): void
     {
         $this->managerRegistry = $managerRegistry;
     }
